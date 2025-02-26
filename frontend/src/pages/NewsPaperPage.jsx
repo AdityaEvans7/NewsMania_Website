@@ -7,39 +7,11 @@ const NewspaperPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ✅ Updated source mapping
-  const sourceMapping = {
-    "bbc-news": "bbc-news",
-    "cnn": "cnn",
-    "nyt": "the-new-york-times", 
-    "the-times-of-india": "the-times-of-india",
-    "al-jazeera": "al-jazeera-english",
-    "fox-news": "fox-news",
-    "the-economic-times": "the-economic-times", 
-    "ndtv-news": "ndtv-news", 
-  };
-
   useEffect(() => {
     const fetchNews = async () => {
-      if (!sourceMapping[id]) {
-        setError("Newspaper not found or not supported!");
-        setLoading(false);
-        return;
-      }
-
       try {
-        const apiKey = "9551fbf83a0042fbbdd128bcf74a48a7"; 
-        let url = `https://newsapi.org/v2/top-headlines?sources=${sourceMapping[id]}&apiKey=${apiKey}`;
-        
-        if (id === "nyt") {
-          url = `https://newsapi.org/v2/everything?q=New%20York%20Times&apiKey=${apiKey}`;
-        }
-
-        console.log("Fetching news from:", url);
-        const response = await fetch(url);
+        const response = await fetch(`http://localhost:5000/news/${id}`);
         const data = await response.json();
-        
-        console.log("API Response:", data);
 
         if (data.status === "ok") {
           setArticles(data.articles.slice(0, 20));
@@ -66,7 +38,11 @@ const NewspaperPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {articles.map((article, index) => (
           <div key={index} className="p-4 bg-white shadow-lg rounded-lg">
-            <img src={article.urlToImage || "https://via.placeholder.com/300"} alt={article.title} className="w-full h-40 object-cover rounded-lg mb-3" />
+            <img
+              src={article.urlToImage || "https://via.placeholder.com/300"}
+              alt={article.title}
+              className="w-full h-40 object-cover rounded-lg mb-3"
+            />
             <h2 className="text-lg font-semibold">{article.title}</h2>
             <p className="text-sm text-gray-600">{article.description}</p>
             <a

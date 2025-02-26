@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import SearchBar from "./SearchBar"; // Ensure you have this component
 
 const NewsContainer = () => {
   const [newsItems, setNewsItems] = useState([]);
@@ -10,11 +10,10 @@ const NewsContainer = () => {
     setLoading(true);
     setError(null);
 
-    let url = `https://newsapi.org/v2/everything?q=${query}&apiKey=bfce6599a7a616bf5f3a8fdc6c5780e0`;
-
     try {
-      const response = await fetch(url);
+      const response = await fetch(`http://localhost:5000/news?q=${query}`);
       const data = await response.json();
+
       if (data.articles && data.articles.length > 0) {
         setNewsItems(data.articles);
       } else {
@@ -35,14 +34,19 @@ const NewsContainer = () => {
       {loading ? (
         <div>Loading...</div>
       ) : error ? (
-        <div>{error}</div>
+        <div className="text-red-500">{error}</div>
       ) : (
         <div>
           {newsItems.map((article, index) => (
             <div key={index} className="bg-white p-4 mb-4 shadow-md rounded-lg">
               <h3 className="text-xl font-semibold">{article.title}</h3>
               <p>{article.description}</p>
-              <a href={article.url} target="_blank" rel="noopener noreferrer" className="text-blue-600">
+              <a
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600"
+              >
                 Read more
               </a>
             </div>

@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Marquee from "react-fast-marquee";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for page navigation
+import { useNavigate } from "react-router-dom";
 
 const TrendingNews = () => {
   const [newsItems, setNewsItems] = useState([]);
-  const [loading, setLoading] = useState(true);  // Track loading state
-  const [error, setError] = useState(null);      // Track errors
-  const navigate = useNavigate(); // Initialize navigate
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrendingNews = async () => {
       try {
-        // Fetch global top headlines
-        const response = await fetch("http://localhost:5000/news");
-
-
+        const response = await fetch("http://localhost:5000/news/trending");
         const data = await response.json();
-        console.log(data); // Debugging the API response
-        
+
         if (data.articles && data.articles.length > 0) {
           setNewsItems(data.articles);
         } else {
@@ -27,16 +23,15 @@ const TrendingNews = () => {
         console.error("Error fetching news:", error);
         setError("Failed to fetch trending news.");
       } finally {
-        setLoading(false); // Stop loading after fetch is done
+        setLoading(false);
       }
     };
 
     fetchTrendingNews();
   }, []);
 
-  // Navigate to full article page when a headline is clicked
   const handleClick = (article) => {
-    navigate("/full-article", { state: { article } }); // Pass article to the full-article page
+    navigate("/full-article", { state: { article } });
   };
 
   return (
@@ -50,10 +45,10 @@ const TrendingNews = () => {
       ) : (
         <Marquee speed={50} pauseOnHover gradient={false} className="overflow-hidden">
           {newsItems.map((news, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="px-6 py-2 mx-4 border border-blue-600 text-black rounded-full whitespace-nowrap cursor-pointer"
-              onClick={() => handleClick(news)} // Add click handler
+              onClick={() => handleClick(news)}
             >
               {news.title}
             </div>
