@@ -10,13 +10,13 @@ const NewspaperPage = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/news/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/news/${id}`);
         const data = await response.json();
 
-        if (data.status === "ok") {
-          setArticles(data.articles.slice(0, 20));
+        if (data.news && data.news.length > 0) {
+          setArticles(data.news.slice(0, 20));
         } else {
-          setError(data.message || "Failed to fetch news!");
+          setError("No news found!");
         }
       } catch (error) {
         setError("Error fetching news!");

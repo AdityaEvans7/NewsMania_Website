@@ -11,17 +11,23 @@ const TrendingNews = () => {
   useEffect(() => {
     const fetchTrendingNews = async () => {
       try {
-        const response = await fetch("http://localhost:5000/news/trending");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/news`);
+
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         const data = await response.json();
 
-        if (data.articles && data.articles.length > 0) {
-          setNewsItems(data.articles);
-        } else {
-          setError("No trending news found.");
+        if (!data.news || data.news.length === 0) {
+          throw new Error("No trending news found.");
         }
+
+        setNewsItems(data.news);
       } catch (error) {
-        console.error("Error fetching news:", error);
-        setError("Failed to fetch trending news.");
+        console.error("Error fetching news:", error.message);
+        setError(error.message);
       } finally {
         setLoading(false);
       }

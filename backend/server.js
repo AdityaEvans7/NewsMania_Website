@@ -1,34 +1,41 @@
-import express from "express"; // Use import instead of require
-import cors from "cors";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-
-dotenv.config();
+const express = require("express");
+const cors = require("cors");
+const fetch = require("node-fetch");
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 5000;
+
+app.use(cors()); // Ensure frontend can access backend
 app.use(express.json());
 
-const API_KEY = process.env.GNEWS_API_KEY;
+const NEWS_API_KEY = "02fd93c0997641979e077f639e1770c0";
 
 app.get("/news", async (req, res) => {
-    try {
-        const response = await fetch(
-            `https://gnews.io/api/v4/top-headlines?token=${API_KEY}&lang=en&country=us`
-        );
-        const data = await response.json();
+  try {
+    const response = await fetch(
+      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${NEWS_API_KEY}`
+    );
 
-        console.log("GNews API Response:", data); // Debugging
-
-        if (!data.articles) {
-            throw new Error("Failed to fetch news from GNews API");
-        }
-
-        res.json(data);
-    } catch (error) {
-        console.error("Error fetching news:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+    // ✅ Check if response is OK
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "Failed to fetch news" });
     }
+
+    const data = await response.json();
+
+    // ✅ Check if API actually returned articles
+    if (!data.articles) {
+      return res.status(500).json({ error: "Invalid news data received" });
+    }
+
+    res.json({ news: data.articles });
+  } catch (error) {
+    console.error("Server Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});

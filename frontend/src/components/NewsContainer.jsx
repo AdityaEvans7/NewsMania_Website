@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import SearchBar from "./SearchBar"; // Ensure you have this component
+import SearchBar from "./SearchBar";
 
 const NewsContainer = () => {
   const [newsItems, setNewsItems] = useState([]);
@@ -11,11 +11,12 @@ const NewsContainer = () => {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:5000/news?q=${query}`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/news?query=${query}`);
+
       const data = await response.json();
 
-      if (data.articles && data.articles.length > 0) {
-        setNewsItems(data.articles);
+      if (data.news && data.news.length > 0) {
+        setNewsItems(data.news);
       } else {
         setError("No news found for this search.");
         setNewsItems([]);
