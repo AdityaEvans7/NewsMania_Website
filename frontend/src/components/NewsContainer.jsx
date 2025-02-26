@@ -10,7 +10,7 @@ const NewsContainer = () => {
     setLoading(true);
     setError(null);
 
-    let url = `https://newsapi.org/v2/everything?q=${query}&apiKey=02fd93c0997641979e077f639e1770c0`;
+    let url = `https://newsapi.org/v2/everything?q=${query}&apiKey=bfce6599a7a616bf5f3a8fdc6c5780e0`;
 
     try {
       const response = await fetch(url);
